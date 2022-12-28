@@ -5,7 +5,8 @@ code.
 
 # List of Applications
 
-* `view_dispatcher_example`: Sample application which uses a view dispatcher
+* `viewport_example`: Example application which uses a single viewport
+* `view_dispatcher_example`: Example application which uses a view dispatcher
 
 # Setup
 
