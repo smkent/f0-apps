@@ -1,7 +1,7 @@
 #include "app.h"
 #include "view_main.h"
 
-static struct AppViewState views[] = {
+static AppViewState views[] = {
     {
         .config = &view_main_config,
     },
@@ -9,7 +9,7 @@ static struct AppViewState views[] = {
 
 static const unsigned views_count = COUNT_OF(views);
 
-static void app_views_free(app_t* app) {
+static void app_views_free(App* app) {
     for(unsigned i = 0; i < views_count; i++) {
         furi_assert(views[i].context);
         view_dispatcher_remove_view(app->view_dispatcher, views[i].config->id);
@@ -18,9 +18,9 @@ static void app_views_free(app_t* app) {
     }
 }
 
-static app_t* app_views_alloc(app_t* app) {
+static App* app_views_alloc(App* app) {
     for(unsigned i = 0; i < views_count; i++) {
-        views[i].context = malloc(sizeof(struct AppView));
+        views[i].context = malloc(sizeof(AppView));
         views[i].context->view = view_alloc();
         views[i].context->app = app;
         view_set_context(views[i].context->view, views[i].context);
@@ -36,7 +36,7 @@ static app_t* app_views_alloc(app_t* app) {
     return app;
 }
 
-static void app_free(app_t* app) {
+static void app_free(App* app) {
     furi_assert(app);
     app_views_free(app);
     furi_record_close(RECORD_NOTIFICATION);
@@ -48,8 +48,8 @@ static void app_free(app_t* app) {
     free(app);
 }
 
-static app_t* app_alloc() {
-    app_t* app = malloc(sizeof(app_t));
+static App* app_alloc() {
+    App* app = malloc(sizeof(App));
     app->gui = furi_record_open(RECORD_GUI);
     app->view_port = view_port_alloc();
     gui_add_view_port(app->gui, app->view_port, GuiLayerFullscreen);
@@ -62,7 +62,7 @@ static app_t* app_alloc() {
 
 int32_t app_entry_point(void) {
     srand(DWT->CYCCNT);
-    app_t* app = app_alloc();
+    App* app = app_alloc();
     view_dispatcher_run(app->view_dispatcher);
     app_free(app);
     return 0;

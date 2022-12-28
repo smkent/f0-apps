@@ -15,10 +15,10 @@ static void handle_draw(Canvas* const canvas, void* ctx) {
     UNUSED(ctx);
     canvas_clear(canvas);
     canvas_set_font(canvas, FontPrimary);
-    canvas_draw_str_aligned(canvas, 64, 32, AlignCenter, AlignCenter, "Test App");
+    canvas_draw_str_aligned(canvas, 64, 32, AlignCenter, AlignCenter, "View Dispatcher example");
 }
 
-struct ViewConfig view_main_config = {
+ViewConfig view_main_config = {
     .id = ViewMain,
     .handle_back = handle_back,
     .handle_input = handle_input,

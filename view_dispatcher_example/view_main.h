@@ -2,4 +2,4 @@
 
 #include "app.h"
 
-extern struct ViewConfig view_main_config;
+extern ViewConfig view_main_config;
