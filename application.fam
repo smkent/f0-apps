@@ -1,0 +1,13 @@
+App(
+    appid="view_dispatcher_example",
+    name="View Dispatcher example",
+    apptype=FlipperAppType.EXTERNAL,
+    entry_point="app_entry_point",
+    requires=["gui"],
+    stack_size=2 * 1024,
+    order=20,
+    fap_icon="view_dispatcher_example/icon_app.png",
+    fap_category="smkent",
+)
+
+# vim: ft=python

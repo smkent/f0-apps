@@ -1,0 +1,64 @@
+---
+name: Test
+
+on:
+  pull_request:
+  push:
+    branches:
+      - main
+
+jobs:
+  Test:
+    name: Lint and build Flipper Application Package
+    runs-on: ubuntu-latest
+    steps:
+      - name: 💾 Check out repository
+        uses: actions/checkout@v3
+        with:
+          path: app
+
+      - name: 🏷️ Determine latest stable Flipper Zero firmware tag
+        run: |
+          echo "fw_tag=$(\
+            git ls-remote --tags https://github.com/flipperdevices/flipperzero-firmware \
+            | grep -e 'tags/[0-9\.]\+$' \
+            | awk '{print $1" "$2}' \
+            | sort -V -k 2 \
+            | tail -n 1 \
+            | awk '{print $2}' \
+          )" >> $GITHUB_ENV
+
+      - name: 💵 Cache Flipper Zero firmware repository
+        id: fw-cache
+        uses: actions/cache@v3
+        with:
+          path: fw
+          key: "f0-firmware-${{ runner.os }}-${{ env.fw_tag }}"
+
+      - name: 🐬 Check out Flipper Zero firmware repository
+        uses: actions/checkout@v3
+        with:
+          repository: flipperdevices/flipperzero-firmware
+          path: fw
+          ref: ${{ env.fw_tag }}
+        if: steps.fw-cache.outputs.cache-hit != 'true'
+
+      - name: 🩹 Apply FAP linting patch
+        working-directory: ./fw
+        run: |
+          git apply ../app/.github/*.patch
+        if: steps.fw-cache.outputs.cache-hit != 'true'
+
+      - name: 🔗 Symlink application repository within firmware repository
+        run: |
+          ln -svf ../../app fw/applications_user/app
+
+      - name: 🔬 Run linters
+        working-directory: ./fw
+        run: |
+          ./fbt lint
+
+      - name: 📦 Build All Flipper Application Packages
+        working-directory: ./fw
+        run: |
+          ./fbt faps
