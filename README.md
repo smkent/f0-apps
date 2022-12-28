@@ -24,7 +24,7 @@ repository:
 
 ```shell
 cd applications_user
-git clone https://github.com/smkent/f0-sandbox-app
+git clone https://github.com/smkent/f0-apps
 ```
 
 # Usage
