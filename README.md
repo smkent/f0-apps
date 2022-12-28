@@ -6,6 +6,7 @@ code.
 # List of Applications
 
 * `led_rainbow`: Loop the Flipper Zero LED through every color
+* `sprite_sandbox`: Experimenting with images/sprites
 * `viewport_example`: Example application which uses a single viewport
 * `view_dispatcher_example`: Example application which uses a view dispatcher
 
