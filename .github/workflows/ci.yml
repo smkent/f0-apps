@@ -9,7 +9,7 @@ on:
 
 jobs:
   Test:
-    name: Lint and build Flipper Application Package
+    name: Lint and build Flipper Application Packages
     runs-on: ubuntu-latest
     steps:
       - name: 💾 Check out repository
