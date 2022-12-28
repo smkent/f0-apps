@@ -1,11 +1,24 @@
 App(
-    appid="view_dispatcher_example",
-    name="View Dispatcher example",
+    appid="viewport_example",
+    name="ViewPort example",
+    sources=["viewport_example/*.c*"],
     apptype=FlipperAppType.EXTERNAL,
     entry_point="app_entry_point",
     requires=["gui"],
     stack_size=2 * 1024,
-    order=20,
+    order=100,
+    fap_icon="viewport_example/icon_app.png",
+    fap_category="smkent",
+)
+App(
+    appid="view_dispatcher_example",
+    name="View Dispatcher example",
+    sources=["view_dispatcher_example/*.c*"],
+    apptype=FlipperAppType.EXTERNAL,
+    entry_point="app_entry_point",
+    requires=["gui"],
+    stack_size=2 * 1024,
+    order=101,
     fap_icon="view_dispatcher_example/icon_app.png",
     fap_category="smkent",
 )
