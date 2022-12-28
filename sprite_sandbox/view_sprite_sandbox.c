@@ -15,14 +15,12 @@ typedef struct {
 
 typedef struct {
     SpriteWalk* sprite_walk;
-    bool anim;
     uint8_t x;
     uint8_t y;
 } Model;
 
 static inline void model_init(Model* model) {
     model->sprite_walk = sprite_walk_alloc();
-    model->anim = false;
     model->x = 0;
     model->y = 0;
     UNUSED(max_x);
@@ -82,12 +80,10 @@ static bool handle_input_update_model(InputEvent* event, Model* model) {
             return false;
             break;
         }
-        model->anim = true;
         sprite_walk_set_direction(model->sprite_walk, walk_direction);
         sprite_walk_animation_start(model->sprite_walk);
         return true;
     } else if(event->type == InputTypeRelease) {
-        model->anim = false;
         sprite_walk_animation_stop(model->sprite_walk);
         return true;
     }
