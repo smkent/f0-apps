@@ -3,14 +3,6 @@
 
 #include <gui/view.h>
 
-static const Icon* icons[] = {
-    &I_pokemon_player_down,
-    &I_pokemon_player_down_walk_l,
-    &I_pokemon_player_down_walk_r,
-};
-
-static const unsigned icons_count = COUNT_OF(icons);
-
 static const uint32_t fps = 4;
 static const uint8_t sprite_dim = 16;
 static const uint8_t max_x = 128 / sprite_dim;
@@ -21,11 +13,11 @@ typedef struct {
 } LocalCtx;
 
 enum WalkIcon {
-    WalkIconDown1 = 0,
-    WalkIconDownL,
-    WalkIconDown2,
-    WalkIconDownR,
-    WalkIconEnd,
+    WalkAnim1 = 0,
+    WalkAnim2,
+    WalkAnim3,
+    WalkAnim4,
+    WalkAnimEnd,
 };
 
 enum WalkDirection {
@@ -47,26 +39,26 @@ static inline void model_init(Model* model) {
     model->anim = false;
     model->x = 0;
     model->y = 0;
-    model->icon_state = WalkIconDown1;
+    model->icon_state = WalkAnim1;
     model->walk_direction = WalkDown;
     UNUSED(max_x);
     UNUSED(max_y);
 }
 
 static const Icon* walk_icon(Model* model) {
-    enum WalkIcon icon_state = WalkIconDown1;
+    enum WalkIcon icon_state = WalkAnim1;
     if(model->anim) {
         icon_state = model->icon_state;
     }
     switch(model->walk_direction) {
     case WalkDown:
         switch(icon_state) {
-        case WalkIconDown1:
-        case WalkIconDown2:
+        case WalkAnim1:
+        case WalkAnim3:
             return &I_pokemon_player_down;
-        case WalkIconDownL:
+        case WalkAnim2:
             return &I_pokemon_player_down_walk_l;
-        case WalkIconDownR:
+        case WalkAnim4:
             return &I_pokemon_player_down_walk_r;
         default:
             return NULL;
@@ -74,12 +66,12 @@ static const Icon* walk_icon(Model* model) {
         break;
     case WalkUp:
         switch(icon_state) {
-        case WalkIconDown1:
-        case WalkIconDown2:
+        case WalkAnim1:
+        case WalkAnim3:
             return &I_pokemon_player_up;
-        case WalkIconDownL:
+        case WalkAnim2:
             return &I_pokemon_player_up_walk_l;
-        case WalkIconDownR:
+        case WalkAnim4:
             return &I_pokemon_player_up_walk_r;
         default:
             return NULL;
@@ -87,11 +79,11 @@ static const Icon* walk_icon(Model* model) {
         break;
     case WalkLeft:
         switch(icon_state) {
-        case WalkIconDown1:
-        case WalkIconDown2:
+        case WalkAnim1:
+        case WalkAnim3:
             return &I_pokemon_player_left;
-        case WalkIconDownL:
-        case WalkIconDownR:
+        case WalkAnim2:
+        case WalkAnim4:
             return &I_pokemon_player_left_walk;
         default:
             return NULL;
@@ -99,11 +91,11 @@ static const Icon* walk_icon(Model* model) {
         break;
     case WalkRight:
         switch(icon_state) {
-        case WalkIconDown1:
-        case WalkIconDown2:
+        case WalkAnim1:
+        case WalkAnim3:
             return &I_pokemon_player_right;
-        case WalkIconDownL:
-        case WalkIconDownR:
+        case WalkAnim2:
+        case WalkAnim4:
             return &I_pokemon_player_right_walk;
         default:
             return NULL;
@@ -114,9 +106,8 @@ static const Icon* walk_icon(Model* model) {
 }
 
 static inline void tick(AppView* view, Model* model) {
-    model->icon_state = (model->icon_state + 1) % WalkIconEnd;
     UNUSED(view);
-    UNUSED(icons_count);
+    model->icon_state = (model->icon_state + 1) % WalkAnimEnd;
 }
 
 static void handle_timer(void* ctx) {
@@ -180,7 +171,7 @@ static bool handle_input(InputEvent* event, void* ctx) {
             {
                 model->anim = true;
                 model->walk_direction = walk_direction;
-                model->icon_state = WalkIconDownL;
+                model->icon_state = WalkAnim2;
             },
             true);
         uint32_t hz = furi_kernel_get_tick_frequency();
