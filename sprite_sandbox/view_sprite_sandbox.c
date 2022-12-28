@@ -6,6 +6,7 @@
 #include "sprite_walk.h"
 
 static const uint8_t fps = 5;
+static const uint8_t move_increment = 2;
 static const uint8_t sprite_dim = 16;
 static const uint8_t max_x = 128 / sprite_dim - 1;
 static const uint8_t max_y = 64 / sprite_dim - 1;
@@ -50,19 +51,25 @@ static inline void model_tick(Model* model) {
         case MoveNone:
             break;
         case MoveUp:
-            model->sprite_offset_y -= 1;
+            model->sprite_offset_y -= move_increment;
             break;
         case MoveDown:
-            model->sprite_offset_y += 1;
+            model->sprite_offset_y += move_increment;
             break;
         case MoveLeft:
-            model->sprite_offset_x -= 1;
+            model->sprite_offset_x -= move_increment;
             break;
         case MoveRight:
-            model->sprite_offset_x += 1;
+            model->sprite_offset_x += move_increment;
             break;
         }
-        model->move_remaining -= 1;
+        if(model->move_remaining <= move_increment) {
+            model->move_remaining = 0;
+            model->sprite_offset_x = 0;
+            model->sprite_offset_y = 0;
+        } else {
+            model->move_remaining -= move_increment;
+        }
         if(model->move_remaining == 0) {
             model->move_direction = MoveNone;
         } else {
@@ -80,7 +87,7 @@ static inline void model_tick(Model* model) {
                 break;
             }
             model->y -= 1;
-            model->sprite_offset_y = 15;
+            model->sprite_offset_y = 16 - move_increment;
             break;
         case MoveDown:
             sprite_walk_set_direction(model->sprite_walk, SpriteWalkDown);
@@ -89,7 +96,7 @@ static inline void model_tick(Model* model) {
                 break;
             }
             model->y += 1;
-            model->sprite_offset_y = -15;
+            model->sprite_offset_y = -16 + move_increment;
             break;
         case MoveLeft:
             sprite_walk_set_direction(model->sprite_walk, SpriteWalkLeft);
@@ -98,7 +105,7 @@ static inline void model_tick(Model* model) {
                 break;
             }
             model->x -= 1;
-            model->sprite_offset_x = 15;
+            model->sprite_offset_x = 16 - move_increment;
             break;
         case MoveRight:
             sprite_walk_set_direction(model->sprite_walk, SpriteWalkRight);
@@ -107,7 +114,7 @@ static inline void model_tick(Model* model) {
                 break;
             }
             model->x += 1;
-            model->sprite_offset_x = -15;
+            model->sprite_offset_x = -16 + move_increment;
             break;
         }
         model->move_direction = model->move_next;
