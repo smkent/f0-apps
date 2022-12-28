@@ -3,51 +3,140 @@
 
 #include <gui/view.h>
 
+#include "sprite_walk.h"
+
+static const uint8_t fps = 5;
+static const uint8_t move_increment = 2;
 static const uint8_t sprite_dim = 16;
-static const uint8_t max_x = 128 / sprite_dim;
-static const uint8_t max_y = 64 / sprite_dim;
+static const uint8_t max_x = 128 / sprite_dim - 1;
+static const uint8_t max_y = 64 / sprite_dim - 1;
 
 typedef struct {
     FuriTimer* timer;
 } LocalCtx;
 
-enum WalkDirection {
-    WalkDown,
-    WalkUp,
-    WalkLeft,
-    WalkRight,
-};
+typedef enum {
+    MoveNone = 0,
+    MoveUp,
+    MoveDown,
+    MoveLeft,
+    MoveRight,
+} MoveDirection;
 
 typedef struct {
-    IconAnimation* anim_walk_active;
-    IconAnimation* anim_walk_up;
-    IconAnimation* anim_walk_down;
-    IconAnimation* anim_walk_left;
-    IconAnimation* anim_walk_right;
-    bool anim;
+    SpriteWalk* sprite_walk;
     uint8_t x;
     uint8_t y;
-    enum WalkDirection walk_direction;
+    int8_t sprite_offset_x;
+    int8_t sprite_offset_y;
+    uint8_t move_remaining;
+    MoveDirection move_direction;
+    MoveDirection move_next;
 } Model;
 
 static inline void model_init(Model* model) {
-    model->anim_walk_up = icon_animation_alloc(&A_PokemonPlayerUp_16);
-    model->anim_walk_down = icon_animation_alloc(&A_PokemonPlayerDown_16);
-    model->anim_walk_left = icon_animation_alloc(&A_PokemonPlayerLeft_16);
-    model->anim_walk_right = icon_animation_alloc(&A_PokemonPlayerRight_16);
-    model->anim_walk_active = model->anim_walk_down;
-    model->anim = false;
+    model->sprite_walk = sprite_walk_alloc();
     model->x = 0;
     model->y = 0;
-    model->walk_direction = WalkDown;
-    UNUSED(max_x);
-    UNUSED(max_y);
+    model->sprite_offset_x = 0;
+    model->sprite_offset_y = 0;
+    model->move_remaining = 0;
+    model->move_direction = MoveNone;
+    model->move_next = MoveNone;
+}
+
+static inline void model_tick(Model* model) {
+    if(model->move_remaining > 0) {
+        switch(model->move_direction) {
+        case MoveNone:
+            break;
+        case MoveUp:
+            model->sprite_offset_y -= move_increment;
+            break;
+        case MoveDown:
+            model->sprite_offset_y += move_increment;
+            break;
+        case MoveLeft:
+            model->sprite_offset_x -= move_increment;
+            break;
+        case MoveRight:
+            model->sprite_offset_x += move_increment;
+            break;
+        }
+        if(model->move_remaining <= move_increment) {
+            model->move_remaining = 0;
+            model->sprite_offset_x = 0;
+            model->sprite_offset_y = 0;
+        } else {
+            model->move_remaining -= move_increment;
+        }
+        if(model->move_remaining == 0) {
+            model->move_direction = MoveNone;
+        } else {
+            return;
+        }
+    }
+    if(model->move_next) {
+        switch(model->move_next) {
+        case MoveNone:
+            break;
+        case MoveUp:
+            sprite_walk_set_direction(model->sprite_walk, SpriteWalkUp);
+            if(model->y <= 0) {
+                model->move_next = MoveNone;
+                break;
+            }
+            model->y -= 1;
+            model->sprite_offset_y = 16 - move_increment;
+            break;
+        case MoveDown:
+            sprite_walk_set_direction(model->sprite_walk, SpriteWalkDown);
+            if(model->y >= max_y) {
+                model->move_next = MoveNone;
+                break;
+            }
+            model->y += 1;
+            model->sprite_offset_y = -16 + move_increment;
+            break;
+        case MoveLeft:
+            sprite_walk_set_direction(model->sprite_walk, SpriteWalkLeft);
+            if(model->x <= 0) {
+                model->move_next = MoveNone;
+                break;
+            }
+            model->x -= 1;
+            model->sprite_offset_x = 16 - move_increment;
+            break;
+        case MoveRight:
+            sprite_walk_set_direction(model->sprite_walk, SpriteWalkRight);
+            if(model->x >= max_x) {
+                model->move_next = MoveNone;
+                break;
+            }
+            model->x += 1;
+            model->sprite_offset_x = -16 + move_increment;
+            break;
+        }
+        model->move_direction = model->move_next;
+        if(model->move_direction != MoveNone) {
+            model->move_remaining = 15;
+        }
+    }
+    switch(model->move_direction) {
+    case MoveNone:
+        sprite_walk_animation_stop(model->sprite_walk);
+        break;
+    default:
+        sprite_walk_animation_start(model->sprite_walk);
+        break;
+    }
 }
 
 static void handle_timer(void* ctx) {
     furi_assert(ctx);
     AppView* view = ctx;
-    UNUSED(view);
+    with_view_model(
+        view->view, Model * model, { model_tick(model); }, true);
 }
 
 static void handle_alloc(void* ctx) {
@@ -69,15 +158,23 @@ static void handle_free(void* ctx) {
     furi_timer_free(localctx->timer);
     free(view->localctx);
     with_view_model(
-        view->view,
-        Model * model,
-        {
-            icon_animation_free(model->anim_walk_up);
-            icon_animation_free(model->anim_walk_down);
-            icon_animation_free(model->anim_walk_left);
-            icon_animation_free(model->anim_walk_right);
-        },
-        false);
+        view->view, Model * model, { sprite_walk_free(model->sprite_walk); }, false);
+}
+
+static void handle_enter(void* ctx) {
+    furi_assert(ctx);
+    AppView* view = ctx;
+    uint32_t hz = furi_kernel_get_tick_frequency();
+    LocalCtx* localctx = (LocalCtx*)view->localctx;
+    furi_timer_start(localctx->timer, hz / fps);
+}
+
+static void handle_exit(void* ctx) {
+    furi_assert(ctx);
+    AppView* view = ctx;
+    LocalCtx* localctx = (LocalCtx*)view->localctx;
+    furi_timer_stop(localctx->timer);
+    notification_message(view->app->notifications, &sequence_reset_rgb);
 }
 
 static uint32_t handle_back(void* ctx) {
@@ -86,43 +183,27 @@ static uint32_t handle_back(void* ctx) {
 }
 
 static bool handle_input_update_model(InputEvent* event, Model* model) {
-    IconAnimation* anim_new;
     if(event->type == InputTypePress) {
-        enum WalkDirection walk_direction;
         switch(event->key) {
         case InputKeyDown:
-            walk_direction = WalkDown;
-            anim_new = model->anim_walk_down;
+            model->move_next = MoveDown;
             break;
         case InputKeyUp:
-            walk_direction = WalkUp;
-            anim_new = model->anim_walk_up;
+            model->move_next = MoveUp;
             break;
         case InputKeyLeft:
-            walk_direction = WalkLeft;
-            anim_new = model->anim_walk_left;
+            model->move_next = MoveLeft;
             break;
         case InputKeyRight:
-            walk_direction = WalkRight;
-            anim_new = model->anim_walk_right;
+            model->move_next = MoveRight;
             break;
         default:
             return false;
             break;
         }
-        model->anim = true;
-        model->walk_direction = walk_direction;
-        if(model->anim_walk_active && model->anim_walk_active != anim_new) {
-            icon_animation_stop(model->anim_walk_active);
-        }
-        model->anim_walk_active = anim_new;
-        icon_animation_start(model->anim_walk_active);
         return true;
     } else if(event->type == InputTypeRelease) {
-        model->anim = false;
-        if(model->anim_walk_active) {
-            icon_animation_stop(model->anim_walk_active);
-        }
+        model->move_next = MoveNone;
         return true;
     }
     return false;
@@ -141,14 +222,19 @@ static void handle_draw(Canvas* const canvas, void* ctx) {
     furi_assert(ctx);
     Model* model = ctx;
     canvas_clear(canvas);
-    canvas_draw_icon_animation(
-        canvas, model->x * sprite_dim, model->y * sprite_dim, model->anim_walk_active);
+    sprite_walk_draw(
+        canvas,
+        model->x * sprite_dim + model->sprite_offset_x,
+        model->y * sprite_dim + model->sprite_offset_y,
+        model->sprite_walk);
 }
 
 ViewConfig view_sprite_sandbox_config = {
     .id = ViewSpriteSandbox,
     .handle_alloc = handle_alloc,
     .handle_free = handle_free,
+    .handle_enter = handle_enter,
+    .handle_exit = handle_exit,
     .handle_back = handle_back,
     .handle_input = handle_input,
     .handle_draw = handle_draw,
