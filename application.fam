@@ -1,4 +1,16 @@
 App(
+    appid="led_rainbow",
+    name="LED Rainbow",
+    sources=["led_rainbow/*.c*"],
+    apptype=FlipperAppType.EXTERNAL,
+    entry_point="app_entry_point",
+    requires=["gui"],
+    stack_size=2 * 1024,
+    order=100,
+    fap_icon="led_rainbow/icon_app.png",
+    fap_category="smkent",
+)
+App(
     appid="viewport_example",
     name="ViewPort example",
     sources=["viewport_example/*.c*"],
