@@ -3,14 +3,6 @@
 
 #include <gui/view.h>
 
-static const Icon* icons[] = {
-    &I_pokemon_player_down,
-    &I_pokemon_player_down_walk_l,
-    &I_pokemon_player_down_walk_r,
-};
-
-static const unsigned icons_count = COUNT_OF(icons);
-
 static const uint32_t fps = 4;
 static const uint8_t sprite_dim = 16;
 static const uint8_t max_x = 128 / sprite_dim;
@@ -114,9 +106,8 @@ static const Icon* walk_icon(Model* model) {
 }
 
 static inline void tick(AppView* view, Model* model) {
-    model->icon_state = (model->icon_state + 1) % WalkIconEnd;
     UNUSED(view);
-    UNUSED(icons_count);
+    model->icon_state = (model->icon_state + 1) % WalkIconEnd;
 }
 
 static void handle_timer(void* ctx) {
