@@ -7,8 +7,8 @@
 
 static const uint8_t fps = 5;
 static const uint8_t sprite_dim = 16;
-static const uint8_t max_x = 128 / sprite_dim;
-static const uint8_t max_y = 64 / sprite_dim;
+static const uint8_t max_x = 128 / sprite_dim - 1;
+static const uint8_t max_y = 64 / sprite_dim - 1;
 
 typedef struct {
     FuriTimer* timer;
