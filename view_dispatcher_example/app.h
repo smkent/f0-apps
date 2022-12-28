@@ -13,40 +13,34 @@
 #include <input/input.h>
 #include <notification/notification_messages.h>
 
-typedef struct app_t app_t;
+typedef struct app_t App;
 
-typedef struct {
-    View* view;
-    app_t* app;
-} view_main_t;
-
-struct app_t {
+typedef struct app_t {
     Gui* gui;
     ViewDispatcher* view_dispatcher;
     ViewPort* view_port;
     NotificationApp* notifications;
-    view_main_t* view_main;
-};
+} App;
 
 typedef enum {
     ViewMain,
-} views_t;
+} ViewIDs;
 
-struct ViewConfig {
-    views_t id;
+typedef struct {
+    ViewIDs id;
     void (*handle_enter)(void*);
     void (*handle_exit)(void*);
     uint32_t (*handle_back)(void*);
     bool (*handle_input)(InputEvent* event, void* ctx);
     void (*handle_draw)(Canvas* const canvas, void* ctx);
-};
+} ViewConfig;
 
-struct AppView {
-    app_t* app;
+typedef struct {
+    App* app;
     View* view;
-};
+} AppView;
 
-struct AppViewState {
-    struct ViewConfig* config;
-    struct AppView* context;
-};
+typedef struct {
+    ViewConfig* config;
+    AppView* context;
+} AppViewState;
