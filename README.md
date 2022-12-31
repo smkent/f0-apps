@@ -5,6 +5,7 @@ code.
 
 # List of Applications
 
+* `images_example`: Example application with images and animations
 * `led_rainbow`: Loop the Flipper Zero LED through every color
 * `sprite_sandbox`: Experimenting with images/sprites
 * `submenu_example`: Example application which uses a menu to select views
