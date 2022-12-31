@@ -6,7 +6,7 @@ App(
     entry_point="app_entry_point",
     requires=["gui"],
     stack_size=2 * 1024,
-    order=100,
+    order=10,
     fap_icon="led_rainbow/icon_app.png",
     fap_category="smkent",
 )
@@ -18,21 +18,9 @@ App(
     entry_point="app_entry_point",
     requires=["gui"],
     stack_size=2 * 1024,
-    order=100,
+    order=20,
     fap_icon_assets="sprite_sandbox/images",
     fap_icon="sprite_sandbox/icon_app.png",
-    fap_category="smkent",
-)
-App(
-    appid="submenu_example",
-    name="Submenu Example",
-    sources=["submenu_example/*.c*"],
-    apptype=FlipperAppType.EXTERNAL,
-    entry_point="app_entry_point",
-    requires=["gui"],
-    stack_size=2 * 1024,
-    order=100,
-    fap_icon="submenu_example/icon_app.png",
     fap_category="smkent",
 )
 App(
@@ -57,6 +45,18 @@ App(
     stack_size=2 * 1024,
     order=101,
     fap_icon="view_dispatcher_example/icon_app.png",
+    fap_category="smkent",
+)
+App(
+    appid="submenu_example",
+    name="Submenu Example",
+    sources=["submenu_example/*.c*"],
+    apptype=FlipperAppType.EXTERNAL,
+    entry_point="app_entry_point",
+    requires=["gui"],
+    stack_size=2 * 1024,
+    order=110,
+    fap_icon="submenu_example/icon_app.png",
     fap_category="smkent",
 )
 
