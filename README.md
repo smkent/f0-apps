@@ -14,10 +14,8 @@ code.
 
 # Screenshots
 
-* `images_example`:
+![Apps list](docs/apps_list.gif)
 ![images_example](/docs/images_example.gif)
-
-* `submenu_example`:
 ![submenu_example](/docs/submenu_example.png)
 
 # Setup
