@@ -22,10 +22,10 @@ typedef struct app_t {
 
 typedef enum {
     ViewMain,
-} ViewIDs;
+} ViewID;
 
 typedef struct {
-    ViewIDs id;
+    ViewID id;
     void (*handle_enter)(void*);
     void (*handle_exit)(void*);
     uint32_t (*handle_back)(void*);

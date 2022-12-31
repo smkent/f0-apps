@@ -26,10 +26,10 @@ typedef enum {
     ViewMenu,
     ViewOne,
     ViewTwo,
-} ViewIDs;
+} ViewID;
 
 typedef struct {
-    ViewIDs id;
+    ViewID id;
     void (*handle_alloc)(void*);
     void (*handle_free)(void*);
     void (*handle_enter)(void*);
