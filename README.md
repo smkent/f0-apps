@@ -12,6 +12,14 @@ code.
 * `viewport_example`: Example application which uses a single viewport
 * `view_dispatcher_example`: Example application which uses a view dispatcher
 
+# Screenshots
+
+* `images_example`:
+![images_example](/docs/images_example.gif)
+
+* `submenu_example`:
+![submenu_example](/docs/submenu_example.png)
+
 # Setup
 
 [Install the latest official firmware][f0-update] on your Flipper Zero device.
