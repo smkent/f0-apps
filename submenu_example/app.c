@@ -32,7 +32,6 @@ static void submenu_callback(void* ctx, uint32_t index) {
     view_dispatcher_switch_to_view(app->view_dispatcher, view_id);
 }
 
-
 static void app_views_free(App* app) {
     for(unsigned i = 0; i < views_count; i++) {
         furi_assert(views[i].context);
