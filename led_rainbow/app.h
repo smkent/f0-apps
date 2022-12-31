@@ -13,8 +13,6 @@
 #include <input/input.h>
 #include <notification/notification_messages.h>
 
-typedef struct app_t App;
-
 typedef struct app_t {
     Gui* gui;
     ViewDispatcher* view_dispatcher;
@@ -24,10 +22,10 @@ typedef struct app_t {
 
 typedef enum {
     ViewLEDRainbow,
-} ViewIDs;
+} ViewID;
 
 typedef struct {
-    ViewIDs id;
+    ViewID id;
     void (*handle_alloc)(void*);
     void (*handle_free)(void*);
     void (*handle_enter)(void*);

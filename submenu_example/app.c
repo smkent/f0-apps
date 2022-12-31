@@ -20,7 +20,7 @@ static uint32_t app_exit(void* ctx) {
 static void submenu_callback(void* ctx, uint32_t index) {
     furi_assert(ctx);
     App* app = ctx;
-    ViewIDs view_id = ViewMenu;
+    ViewID view_id = ViewMenu;
     switch(index) {
     case ViewOne:
     case ViewTwo:
