@@ -14,8 +14,6 @@
 #include <input/input.h>
 #include <notification/notification_messages.h>
 
-typedef struct app_t App;
-
 typedef struct app_t {
     Gui* gui;
     ViewDispatcher* view_dispatcher;
