@@ -14,7 +14,7 @@ code.
 
 # Screenshots
 
-![Apps list](docs/apps_list.gif)
+![Apps list](docs/apps_list.png)
 ![images_example](/docs/images_example.gif)
 ![submenu_example](/docs/submenu_example.png)
 
