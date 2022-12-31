@@ -24,6 +24,18 @@ App(
     fap_category="smkent",
 )
 App(
+    appid="submenu_example",
+    name="Submenu Example",
+    sources=["submenu_example/*.c*"],
+    apptype=FlipperAppType.EXTERNAL,
+    entry_point="app_entry_point",
+    requires=["gui"],
+    stack_size=2 * 1024,
+    order=100,
+    fap_icon="submenu_example/icon_app.png",
+    fap_category="smkent",
+)
+App(
     appid="viewport_example",
     name="ViewPort example",
     sources=["viewport_example/*.c*"],
