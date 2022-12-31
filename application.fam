@@ -59,5 +59,18 @@ App(
     fap_icon="submenu_example/icon_app.png",
     fap_category="smkent",
 )
+App(
+    appid="images_example",
+    name="Images Example",
+    sources=["images_example/*.c*", "images_example_*.c*"],
+    apptype=FlipperAppType.EXTERNAL,
+    entry_point="app_entry_point",
+    requires=["gui"],
+    stack_size=2 * 1024,
+    order=120,
+    fap_icon_assets="images_example/images",
+    fap_icon="images_example/icon_app.png",
+    fap_category="smkent",
+)
 
 # vim: ft=python
