@@ -81,7 +81,9 @@ static void handle_draw(Canvas* const canvas, void* ctx) {
     Model* model = ctx;
     canvas_clear(canvas);
     canvas_set_font(canvas, FontPrimary);
-    canvas_draw_str_aligned(canvas, 64, 0, AlignCenter, AlignTop, "Images example");
+    canvas_draw_str_aligned(canvas, 64, 0, AlignCenter, AlignTop, "Images & animations");
+    canvas_set_font(canvas, FontSecondary);
+    canvas_draw_str_aligned(canvas, 64, 60, AlignCenter, AlignBottom, "Example app");
     canvas_draw_icon_animation(canvas, 23, 16 + 4, model->animation_left);
     canvas_draw_icon(canvas, 23 + (1 * (4 + 16)), 16, &I_SaturnTrash_22x29);
     canvas_draw_icon_animation(canvas, 23 + 26 + (1 * (4 + 16)), 16 + 4, model->animation_middle);
