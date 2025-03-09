@@ -55,12 +55,17 @@ Compile only:
 Compile, copy to Flipper Zero via USB, and launch app:
 
 ```shell
-./fbt launch_app APPSRC=<my_app>
+./fbt launch APPSRC=<my_app>
 ```
 
 Once launched, applications are available on the Flipper Zero within
 `Applications` -> `smkent`.
 
+Compile and copy all apps to Flipper Zero via USB:
+
+```shell
+./fbt faps_deploy
+```
 
 [f0]: https://flipperzero.one
 [f0-update]: http://update.flipperzero.one/

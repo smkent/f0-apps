@@ -135,8 +135,7 @@ static inline void model_tick(Model* model) {
 static void handle_timer(void* ctx) {
     furi_assert(ctx);
     AppView* view = ctx;
-    with_view_model(
-        view->view, Model * model, { model_tick(model); }, true);
+    with_view_model(view->view, Model * model, { model_tick(model); }, true);
 }
 
 static void handle_alloc(void* ctx) {
@@ -145,8 +144,7 @@ static void handle_alloc(void* ctx) {
     view->localctx = malloc(sizeof(LocalCtx));
     LocalCtx* localctx = view->localctx;
     view_allocate_model(view->view, ViewModelTypeLocking, sizeof(Model));
-    with_view_model(
-        view->view, Model * model, { model_init(model); }, true);
+    with_view_model(view->view, Model * model, { model_init(model); }, true);
     localctx->timer = furi_timer_alloc(handle_timer, FuriTimerTypePeriodic, view);
 }
 
@@ -157,8 +155,7 @@ static void handle_free(void* ctx) {
     furi_timer_stop(localctx->timer);
     furi_timer_free(localctx->timer);
     free(view->localctx);
-    with_view_model(
-        view->view, Model * model, { sprite_walk_free(model->sprite_walk); }, false);
+    with_view_model(view->view, Model * model, { sprite_walk_free(model->sprite_walk); }, false);
 }
 
 static void handle_enter(void* ctx) {

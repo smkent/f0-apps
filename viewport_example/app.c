@@ -2,7 +2,9 @@
 
 static const int queue_size = 8;
 
-static void event_callback(InputEvent* event, FuriMessageQueue* queue) {
+static void event_callback(InputEvent* event, void* ctx) {
+    furi_assert(ctx);
+    FuriMessageQueue* queue = ctx;
     Event message = {
         .type = EventKey,
         .event = *event,
@@ -35,7 +37,6 @@ static App* app_alloc() {
     gui_add_view_port(app->gui, app->view_port, GuiLayerFullscreen);
     app->view_dispatcher = view_dispatcher_alloc();
     view_dispatcher_attach_to_gui(app->view_dispatcher, app->gui, ViewDispatcherTypeFullscreen);
-    view_dispatcher_enable_queue(app->view_dispatcher);
     app->queue = furi_message_queue_alloc(queue_size, sizeof(Event));
     view_port_input_callback_set(app->view_port, event_callback, app->queue);
     view_port_draw_callback_set(app->view_port, draw_callback, NULL);
