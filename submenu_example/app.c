@@ -90,7 +90,6 @@ static App* app_alloc() {
     app->view_port = view_port_alloc();
     gui_add_view_port(app->gui, app->view_port, GuiLayerFullscreen);
     app->view_dispatcher = view_dispatcher_alloc();
-    view_dispatcher_enable_queue(app->view_dispatcher);
     view_dispatcher_attach_to_gui(app->view_dispatcher, app->gui, ViewDispatcherTypeFullscreen);
     app->notifications = furi_record_open(RECORD_NOTIFICATION);
     return app_views_alloc(app);
